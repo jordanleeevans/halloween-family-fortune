@@ -17,4 +17,5 @@ export type Game = {
 export type Team = {
 	name: string;
 	score: number;
+	isTurn: boolean;
 };

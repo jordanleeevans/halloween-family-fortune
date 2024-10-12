@@ -7,14 +7,16 @@ import React, {
 } from "react";
 import { Round, Team, Game } from "@/types";
 import fuzzysort from "fuzzysort";
+import { playSound } from "@/lib/utils";
 
 interface GameContextType {
 	teams: Team[];
 	currentRound: Round;
 	currentRoundIndex: number;
 	nextRound: () => void;
-	addPoints: (teamIndex: number, points: number) => void;
-	handleSubmit: (e: React.FormEvent, input: string, teamIndex: number) => void;
+	previousRound: () => void;
+	addPoints: (points: number) => void;
+	handleSubmit: (e: React.FormEvent, input: string) => void;
 	cardMessage: string;
 }
 
@@ -26,7 +28,7 @@ export const GameProvider: React.FC<{
 	gameData: Game["rounds"];
 }> = ({ children, teamNames, gameData }) => {
 	const [teams, setTeams] = useState<Team[]>(
-		teamNames.map((name) => ({ name, score: 0 }))
+		teamNames.map((name, index) => ({ name, score: 0, isTurn: index === 0 }))
 	);
 	const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
 	const [currentRound, setCurrentRound] = useState<Round>(gameData[0]);
@@ -41,10 +43,25 @@ export const GameProvider: React.FC<{
 		setCardMessage("");
 	};
 
-	const addPoints = (teamIndex: number, points: number) => {
+	const previousRound = () => {
+		setCurrentRoundIndex((prevIndex) => {
+			let newIndex = 0;
+			if (prevIndex === 0) {
+				newIndex = gameData.length - 1;
+			} else {
+				newIndex = (prevIndex - 1) % gameData.length;
+			}
+			setCurrentRound(gameData[newIndex]);
+			return newIndex;
+		});
+
+		setCardMessage("");
+	};
+
+	const addPoints = (points: number) => {
 		setTeams((prevTeams) =>
-			prevTeams.map((team, index) =>
-				index === teamIndex ? { ...team, score: team.score + points } : team
+			prevTeams.map((team) =>
+				team.isTurn === true ? { ...team, score: team.score + points } : team
 			)
 		);
 	};
@@ -66,18 +83,28 @@ export const GameProvider: React.FC<{
 	};
 
 	const handleSubmit = useCallback(
-		(e: React.FormEvent, input: string, teamIndex: number) => {
+		(e: React.FormEvent, input: string) => {
 			e.preventDefault();
 			const matchedIndex = findMatchedAnswer(input);
 			if (matchedIndex !== -1 && !currentRound.answers[matchedIndex].revealed) {
+				playSound("correct");
 				updateAnswers(matchedIndex);
 				setCardMessage(
 					`You found "${currentRound.answers[matchedIndex].text}"!`
 				);
-				addPoints(teamIndex, currentRound.answers[matchedIndex].points);
+				setTeams((prevTeams) => {
+					const currentTeamIndex = prevTeams.findIndex((team) => team.isTurn);
+					const nextTeamIndex = (currentTeamIndex + 1) % prevTeams.length;
+					return prevTeams.map((team, index) => ({
+						...team,
+						isTurn: index === nextTeamIndex,
+					}));
+				});
+				addPoints(currentRound.answers[matchedIndex].points);
 			} else if (matchedIndex !== -1) {
 				setCardMessage("This answer has already been revealed!");
 			} else {
+				playSound("incorrect");
 				setCardMessage("No match found. Try again!");
 			}
 		},
@@ -92,6 +119,7 @@ export const GameProvider: React.FC<{
 				currentRoundIndex,
 				currentRound,
 				nextRound,
+				previousRound,
 				addPoints,
 				handleSubmit,
 				cardMessage,

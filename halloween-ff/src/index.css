@@ -2,18 +2,17 @@
 @tailwind components;
 @tailwind utilities;
 
-.card {
-  position: relative;
-  overflow: hidden;
+
+@keyframes changeAnimation {
+  0% { transform: scale(1); }
+  50% { transform: scale(1.1); }
+  100% { transform: scale(1); }
 }
 
-.slime-effect {
-  background: linear-gradient(135deg, #228B22 25%, transparent 25%) -50px 0,
-              linear-gradient(225deg, #228B22 25%, transparent 25%) -50px 0,
-              linear-gradient(315deg, #228B22 25%, transparent 25%),
-              linear-gradient(45deg, #228B22 25%, transparent 25%);
-  background-size: 100px 100px;
+.animate-change {
+  animation: changeAnimation 1s ease-in-out;
 }
+
 
 @layer base {
   :root {
