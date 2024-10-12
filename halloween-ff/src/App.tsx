@@ -1,22 +1,18 @@
-import FamilyFortuneCard from "./components/FamilyFortuneCard";
-import { GameProvider } from "./context/GameContext";
-import Navbar from "./components/ui/navbar";
-import gameData from "./data/gameData.json";
-import { RoundManager } from "./components/RoundManager";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Home from "./pages/Home";
+import Layout from "./pages/Layout";
+import FamilyFortunePage from "./pages/FamilyFortune";
 
 function App() {
-	const teamNames = ["Team Spooky", "Team Creepy"];
-
 	return (
-		<GameProvider teamNames={teamNames} gameData={gameData}>
-			<div className="text-center bg-[url('./assets/images/halloween-background.jpg')] bg-center text-halloweenOrange font-creepster flex flex-col items-center min-h-screen">
-				<Navbar />
-				<div className="flex-col items-center justify-center gap-8">
-					<FamilyFortuneCard />
-					<RoundManager />
-				</div>
-			</div>
-		</GameProvider>
+		<BrowserRouter>
+			<Routes>
+				<Route path="/" element={<Layout />}>
+					<Route index element={<Home />} />
+					<Route path="family-fortune" element={<FamilyFortunePage />} />
+				</Route>
+			</Routes>
+		</BrowserRouter>
 	);
 }
 

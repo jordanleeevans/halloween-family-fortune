@@ -39,10 +39,11 @@ const ScoreBoard: React.FC = () => {
 };
 
 const Navbar: React.FC = () => {
+	const { teams } = useGameContext();
 	return (
-		<div className="w-full text-halloweenOrange p-4 flex justify-between items-center shadow-xl rounded-bl-lg rounded-br-lg sticky mb-8 bg-gradient-to-b from-halloweenBlack to-black/30">
+		<div className="w-full text-halloweenOrange p-4 flex justify-between items-center shadow-xl rounded-bl-lg rounded-br-lg sticky mb-8 bg-gradient-to-b from-halloweenBlack to-black/30 animate-in fade-in slide-in-from-top-10 duration-500">
 			<GameTitle />
-			<ScoreBoard />
+			{teams.every((team) => team.score === 0) ? null : <ScoreBoard />}
 		</div>
 	);
 };

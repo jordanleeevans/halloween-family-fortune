@@ -14,8 +14,15 @@ export type Game = {
 	teams: Team[];
 };
 
+export type Player = {
+	name: string;
+	score: number;
+	current: boolean;
+};
+
 export type Team = {
 	name: string;
+	players: Player[];
 	score: number;
 	isTurn: boolean;
 };

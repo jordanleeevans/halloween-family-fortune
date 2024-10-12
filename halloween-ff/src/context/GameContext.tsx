@@ -11,6 +11,7 @@ import { playSound } from "@/lib/utils";
 
 interface GameContextType {
 	teams: Team[];
+	setTeams: React.Dispatch<React.SetStateAction<Team[]>>;
 	currentRound: Round;
 	currentRoundIndex: number;
 	nextRound: () => void;
@@ -28,7 +29,12 @@ export const GameProvider: React.FC<{
 	gameData: Game["rounds"];
 }> = ({ children, teamNames, gameData }) => {
 	const [teams, setTeams] = useState<Team[]>(
-		teamNames.map((name, index) => ({ name, score: 0, isTurn: index === 0 }))
+		teamNames.map((name) => ({
+			name,
+			players: [],
+			score: 0,
+			isTurn: false,
+		}))
 	);
 	const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
 	const [currentRound, setCurrentRound] = useState<Round>(gameData[0]);
@@ -61,7 +67,17 @@ export const GameProvider: React.FC<{
 	const addPoints = (points: number) => {
 		setTeams((prevTeams) =>
 			prevTeams.map((team) =>
-				team.isTurn === true ? { ...team, score: team.score + points } : team
+				team.isTurn === true
+					? {
+							...team,
+							score: team.score + points,
+							players: team.players.map((player) =>
+								player.current === true
+									? { ...player, score: player.score + points }
+									: player
+							),
+					  }
+					: team
 			)
 		);
 	};
@@ -116,6 +132,7 @@ export const GameProvider: React.FC<{
 		<GameContext.Provider
 			value={{
 				teams,
+				setTeams,
 				currentRoundIndex,
 				currentRound,
 				nextRound,
