@@ -1,0 +1,103 @@
+ 
+[
+  {
+    "question": "Name something you associate with Halloween",
+    "answers": [
+      {"text": "Pumpkins", "points": 40},
+      {"text": "Ghosts", "points": 25},
+      {"text": "Witches", "points": 20},
+      {"text": "Costumes", "points": 10},
+      {"text": "Trick or Treat", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a popular Halloween costume",
+    "answers": [
+      {"text": "Witch", "points": 35},
+      {"text": "Vampire", "points": 30},
+      {"text": "Ghost", "points": 20},
+      {"text": "Zombie", "points": 10},
+      {"text": "Skeleton", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a traditional Halloween activity",
+    "answers": [
+      {"text": "Trick or Treating", "points": 50},
+      {"text": "Carving Pumpkins", "points": 30},
+      {"text": "Apple Bobbing", "points": 10},
+      {"text": "Halloween Parties", "points": 5},
+      {"text": "Telling Scary Stories", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a famous Halloween movie",
+    "answers": [
+      {"text": "Hocus Pocus", "points": 40},
+      {"text": "Halloween", "points": 30},
+      {"text": "The Nightmare Before Christmas", "points": 20},
+      {"text": "Beetlejuice", "points": 5},
+      {"text": "Scream", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a creature often associated with Halloween",
+    "answers": [
+      {"text": "Vampire", "points": 35},
+      {"text": "Werewolf", "points": 25},
+      {"text": "Zombie", "points": 20},
+      {"text": "Ghost", "points": 15},
+      {"text": "Mummy", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a popular Halloween sweet",
+    "answers": [
+      {"text": "Haribo", "points": 40},
+      {"text": "Chocolate Bars", "points": 30},
+      {"text": "Lollipops", "points": 15},
+      {"text": "Jelly Babies", "points": 10},
+      {"text": "Toffee Apples", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a colour associated with Halloween",
+    "answers": [
+      {"text": "Orange", "points": 50},
+      {"text": "Black", "points": 30},
+      {"text": "Purple", "points": 10},
+      {"text": "Red", "points": 5},
+      {"text": "Green", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a famous witch",
+    "answers": [
+      {"text": "Hermione Granger", "points": 40},
+      {"text": "Sabrina", "points": 30},
+      {"text": "The Wicked Witch of the West", "points": 20},
+      {"text": "Glinda", "points": 5},
+      {"text": "Maleficent", "points": 5}
+    ]
+  },
+  {
+    "question": "Name a spooky sound you might hear on Halloween",
+    "answers": [
+      {"text": "Howling", "points": 35},
+      {"text": "Creaking", "points": 25},
+      {"text": "Screaming", "points": 20},
+      {"text": "Laughing", "points": 10},
+      {"text": "Whispering", "points": 10}
+    ]
+  },
+  {
+    "question": "Name a famous haunted location in the UK",
+    "answers": [
+      {"text": "Tower of London", "points": 40},
+      {"text": "Edinburgh Castle", "points": 30},
+      {"text": "Hampton Court Palace", "points": 20},
+      {"text": "Borley Rectory", "points": 5},
+      {"text": "Pluckley Village", "points": 5}
+    ]
+  }
+]

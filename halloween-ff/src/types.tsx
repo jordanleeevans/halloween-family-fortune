@@ -1,9 +1,20 @@
 export type Answer = {
-	answer: string;
+	text: string;
+	revealed?: boolean;
 	points: number;
 };
 
-export type Question = {
+export type Round = {
 	question: string;
 	answers: Answer[];
+};
+
+export type Game = {
+	rounds: Round[];
+	teams: Team[];
+};
+
+export type Team = {
+	name: string;
+	score: number;
 };
