@@ -36,9 +36,9 @@ export const GameProvider: React.FC<{
 			isTurn: false,
 		}))
 	);
-	const [currentRoundIndex, setCurrentRoundIndex] = useState(0);
+	const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
 	const [currentRound, setCurrentRound] = useState<Round>(gameData[0]);
-	const [cardMessage, setCardMessage] = useState("");
+	const [cardMessage, setCardMessage] = useState<string>("");
 
 	const nextRound = () => {
 		setCurrentRoundIndex((prevIndex) => {
