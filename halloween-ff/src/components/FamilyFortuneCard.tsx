@@ -14,7 +14,7 @@ export default function FamilyFortuneCard() {
 		handleSubmit,
 	} = useGameContext();
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl">
+		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
 			<CardHeader>
 				<CardTitle className="text-2xl font-bold text-halloweenOrange text-center">
 					Round {currentRoundIndex}

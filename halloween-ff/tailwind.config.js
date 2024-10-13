@@ -58,6 +58,7 @@ export default {
 			},
 			animation: {
 				change: "change 1s ease-in-out",
+				float: "float 2s ease-in-out infinite",
 			},
 			variants: {
 				extend: {
