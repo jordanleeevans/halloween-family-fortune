@@ -56,11 +56,15 @@ const PlayerTile: React.FC<PlayerTileProps> = ({
 }) => {
 	return (
 		<div
-			className={`w-full p-4 mb-2 mx-16 text-center rounded-md transition-all duration-300 hover:bg-halloweenOrange hover:text-white hover:cursor-pointer ${
+			className={`w-full p-4 mb-2 mx-16 text-center rounded-md transition-all duration-300 hover:text-white  ${
 				player.current
-					? "bg-halloweenGreen text-white hover:bg-green-800"
+					? "bg-halloweenGreen text-white hover:bg-green-900 hover:cursor-pointer"
 					: "bg-halloweenOrange"
-			} ${isClicked ? "animate-float" : ""}`}
+			} ${
+				isClicked
+					? "animate-float border-2 border-white shadow-white shadow-md "
+					: ""
+			}`}
 			onClick={onClick}
 		>
 			<div className="flex justify-between items-center">

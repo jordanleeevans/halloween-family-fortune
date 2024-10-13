@@ -24,6 +24,12 @@ const TeamCreationCard: React.FC<TeamCreationCardProps> = ({ teamIndex }) => {
 	const [isEditing, setIsEditing] = useState(false);
 	const [newTeamName, setNewTeamName] = useState(team.name);
 
+	const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+		if (e.key === "Enter") {
+			handleAddPlayer();
+		}
+	};
+
 	const addPlayerToTeam = (player: Player) => {
 		const updatedTeams = [...teams];
 		updatedTeams[teamIndex].players.push(player);
@@ -81,6 +87,7 @@ const TeamCreationCard: React.FC<TeamCreationCardProps> = ({ teamIndex }) => {
 						placeholder="Add player"
 						value={playerName}
 						onChange={(e) => setPlayerName(e.target.value)}
+						onKeyDown={handleKeyDown}
 					/>
 					<Button
 						onClick={handleAddPlayer}

@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from "react";
-import { useGameContext } from "@/context/GameContext";
+import React from "react";
 
 const GameTitle: React.FC = () => {
 	return (
@@ -9,41 +8,10 @@ const GameTitle: React.FC = () => {
 	);
 };
 
-const ScoreBoard: React.FC = () => {
-	const { teams } = useGameContext();
-	const [prevTeams, setPrevTeams] = useState(teams);
-
-	useEffect(() => {
-		if (JSON.stringify(prevTeams) !== JSON.stringify(teams)) {
-			const scoreBoard = document.querySelector(".score-board");
-			if (scoreBoard) {
-				scoreBoard.classList.add("animate-change");
-				setTimeout(() => {
-					scoreBoard.classList.remove("animate-change");
-				}, 1000);
-			}
-			setPrevTeams(teams);
-		}
-	}, [teams, prevTeams]);
-
-	return (
-		<div className="score-board flex space-x-4">
-			{teams.map((team, index) => (
-				<div key={index} className="flex flex-col items-center animate-change">
-					<span className="font-bold">{team.name}</span>
-					<span>{team.score} points</span>
-				</div>
-			))}
-		</div>
-	);
-};
-
 const Navbar: React.FC = () => {
-	const { teams } = useGameContext();
 	return (
 		<div className="w-full text-halloweenOrange p-4 flex justify-between items-center shadow-xl rounded-bl-lg rounded-br-lg sticky mb-8 bg-gradient-to-b from-halloweenBlack to-black/30 animate-in fade-in slide-in-from-top-10 duration-500">
 			<GameTitle />
-			{teams.every((team) => team.score === 0) ? null : <ScoreBoard />}
 		</div>
 	);
 };

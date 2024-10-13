@@ -46,7 +46,6 @@ const Home: React.FC = () => {
 		setTeams(teams);
 		setCurrentPlayers();
 
-		console.log(teams);
 		navigate("/family-fortune");
 	};
 

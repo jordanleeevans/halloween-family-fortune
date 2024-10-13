@@ -8,15 +8,16 @@ import { useState } from "react";
 export default function FamilyFortuneCard() {
 	const [input, setInput] = useState("");
 	const { currentRoundIndex, currentRound, handleSubmit } = useGameContext();
+
 	return (
 		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
 			<CardHeader>
 				<CardTitle className="text-2xl font-bold text-halloweenOrange text-center">
-					Round {currentRoundIndex}
+					Round {currentRoundIndex + 1}
 				</CardTitle>
 			</CardHeader>
 			<CardContent>
-				<h2 className="text-xl mb-4 text-center">{currentRound.question}</h2>
+				<Title />
 				<div className="space-y-2 mb-4">
 					{currentRound.answers.map((answer, index) => (
 						<Tile key={index} answer={answer} />
@@ -49,3 +50,30 @@ export default function FamilyFortuneCard() {
 		</Card>
 	);
 }
+
+const Title: React.FC = () => {
+	const { currentRound } = useGameContext();
+	const [isQuestionRevealed, setIsQuestionRevealed] = useState<boolean>(false);
+	const handleRevealQuestion = () => {
+		setIsQuestionRevealed(true);
+	};
+	return (
+		<div className="relative">
+			<h2
+				className={`text-xl mb-4 text-center transition-opacity duration-500 ${
+					isQuestionRevealed ? "opacity-100" : "opacity-0"
+				}`}
+			>
+				{currentRound.question}
+			</h2>
+			{!isQuestionRevealed && (
+				<div
+					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm"
+					onClick={handleRevealQuestion}
+				>
+					<span className="text-white text-xl">Click to Reveal</span>
+				</div>
+			)}
+		</div>
+	);
+};

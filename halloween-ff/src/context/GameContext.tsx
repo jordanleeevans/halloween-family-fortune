@@ -189,12 +189,21 @@ export const GameProvider: React.FC<{
 		(e: React.FormEvent, input: string) => {
 			e.preventDefault();
 			const team = teams.find((team) => team.isTurn);
+
 			if (!team) {
 				toast.error("Please select the player who hit the buzzer!", {
 					duration: 3000,
 				});
 				return;
 			}
+
+			if (!input) {
+				toast.error("C'mon, you need to put an answer in...duh!", {
+					duration: 3000,
+				});
+				return;
+			}
+
 			const matchedIndex = findMatchedAnswer(input);
 			if (matchedIndex !== -1 && !currentRound.answers[matchedIndex].revealed) {
 				handleAction(true);
