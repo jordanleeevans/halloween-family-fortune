@@ -7,12 +7,7 @@ import { useState } from "react";
 
 export default function FamilyFortuneCard() {
 	const [input, setInput] = useState("");
-	const {
-		currentRoundIndex,
-		currentRound,
-		cardMessage: message,
-		handleSubmit,
-	} = useGameContext();
+	const { currentRoundIndex, currentRound, handleSubmit } = useGameContext();
 	return (
 		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
 			<CardHeader>
@@ -50,7 +45,6 @@ export default function FamilyFortuneCard() {
 						Submit
 					</Button>
 				</form>
-				{message && <p className="text-center text-orange-300">{message}</p>}
 			</CardContent>
 		</Card>
 	);

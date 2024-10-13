@@ -1,0 +1,25 @@
+
+{
+    "correctAnswer": {
+      "actions": [
+        "Take a sip m8 🍻",
+        "Choose someone to drink 👀",
+        "Oh no, everyone drinks 🍻",
+        "Take a shot 🥃",
+        "You're safe on this one 🙌",
+        "You wouldn't start a waterfall... 🌊",
+        "You're safe, but whoever you touched last drinks! 🤡"
+      ]
+    },
+    "incorrectAnswer": {
+      "actions": [
+        "That was embarrassing, take a shot 🥃",
+        "Really? That's two fingers 🫵",
+        "You're not very good at this, take a sip 🍻",
+        "Pick someone to drown your sorrows with 🥲",
+        "What a shame, tequila for you 🇲🇽",
+        "The lads ain't gonna be happy with this, all lads drink 🤦",
+        "The ladies ain't gonna be happy with this, all ladies drink 🤦‍♀️"
+      ]
+    }
+}

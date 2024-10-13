@@ -8,20 +8,24 @@ import React, {
 import { Round, Team, Game } from "@/types";
 import fuzzysort from "fuzzysort";
 import { playSound } from "@/lib/utils";
+import { toast } from "react-hot-toast";
+import answerActions from "../data/answers.json";
 
-interface GameContextType {
+interface GameContextProps {
 	teams: Team[];
-	setTeams: React.Dispatch<React.SetStateAction<Team[]>>;
 	currentRound: Round;
 	currentRoundIndex: number;
+	buzzerPlayer: { teamIndex: number | null; playerIndex: number | null };
+	setBuzzerPlayer: (teamIndex: number, playerIndex: number) => void;
+	setTeams: React.Dispatch<React.SetStateAction<Team[]>>;
+	setTeamTurn: (teamIndex: number) => void;
 	nextRound: () => void;
 	previousRound: () => void;
 	addPoints: (points: number) => void;
 	handleSubmit: (e: React.FormEvent, input: string) => void;
-	cardMessage: string;
 }
 
-const GameContext = createContext<GameContextType | undefined>(undefined);
+const GameContext = createContext<GameContextProps | undefined>(undefined);
 
 export const GameProvider: React.FC<{
 	children: ReactNode;
@@ -38,7 +42,51 @@ export const GameProvider: React.FC<{
 	);
 	const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
 	const [currentRound, setCurrentRound] = useState<Round>(gameData[0]);
-	const [cardMessage, setCardMessage] = useState<string>("");
+	const [buzzerPlayer, setBuzzerPlayerState] = useState<{
+		teamIndex: number | null;
+		playerIndex: number | null;
+	}>({ teamIndex: null, playerIndex: null });
+
+	const setBuzzerPlayer = (teamIndex: number, playerIndex: number) => {
+		if (!teams[teamIndex].players[playerIndex].current) {
+			toast.error("Please select one of the active players!", {
+				duration: 3000,
+			});
+			return;
+		}
+		setBuzzerPlayerState({ teamIndex, playerIndex });
+	};
+
+	const clearBuzzerPlayer = () => {
+		setBuzzerPlayerState({ teamIndex: null, playerIndex: null });
+	};
+
+	const handleNextPlayers = (direction: "next" | "previous") => {
+		setTeams((prevTeams) =>
+			prevTeams.map((team) => {
+				const currentPlayerIndex = team.players.findIndex(
+					(player) => player.current
+				);
+				let newPlayerIndex: number = 0;
+
+				if (direction === "next") {
+					newPlayerIndex = (currentPlayerIndex + 1) % team.players.length;
+				} else if (direction === "previous") {
+					newPlayerIndex =
+						(currentPlayerIndex - 1 + team.players.length) %
+						team.players.length;
+				}
+
+				return {
+					...team,
+					players: team.players.map((player, index) => ({
+						...player,
+						current: index === newPlayerIndex,
+					})),
+				};
+			})
+		);
+	};
 
 	const nextRound = () => {
 		setCurrentRoundIndex((prevIndex) => {
@@ -46,7 +94,7 @@ export const GameProvider: React.FC<{
 			setCurrentRound(gameData[newIndex]);
 			return newIndex;
 		});
-		setCardMessage("");
+		handleNextPlayers("next");
 	};
 
 	const previousRound = () => {
@@ -60,8 +108,7 @@ export const GameProvider: React.FC<{
 			setCurrentRound(gameData[newIndex]);
 			return newIndex;
 		});
-
-		setCardMessage("");
+		handleNextPlayers("previous");
 	};
 
 	const addPoints = (points: number) => {
@@ -80,6 +127,46 @@ export const GameProvider: React.FC<{
 					: team
 			)
 		);
+	};
+
+	const setTeamTurn = (teamIndex: number) => {
+		setTeams((prevTeams) =>
+			prevTeams.map((team, index) =>
+				index === teamIndex
+					? { ...team, isTurn: true }
+					: { ...team, isTurn: false }
+			)
+		);
+	};
+
+	const clearTeamTurn = () => {
+		setTeams((prevTeams) =>
+			prevTeams.map((team) => ({ ...team, isTurn: false }))
+		);
+	};
+
+	const handleAction = (isCorrect: boolean) => {
+		if (isCorrect) {
+			playSound("correct");
+			const randomAction: string =
+				answerActions.correctAnswer.actions[
+					Math.floor(Math.random() * answerActions.correctAnswer.actions.length)
+				];
+			toast.success(randomAction, {
+				duration: 5000,
+			});
+		} else {
+			playSound("incorrect");
+			const randomAction: string =
+				answerActions.incorrectAnswer.actions[
+					Math.floor(
+						Math.random() * answerActions.incorrectAnswer.actions.length
+					)
+				];
+			toast.error(randomAction, {
+				duration: 5000,
+			});
+		}
 	};
 
 	const findMatchedAnswer = (input: string) => {
@@ -101,28 +188,27 @@ export const GameProvider: React.FC<{
 	const handleSubmit = useCallback(
 		(e: React.FormEvent, input: string) => {
 			e.preventDefault();
+			const team = teams.find((team) => team.isTurn);
+			if (!team) {
+				toast.error("Please select the player who hit the buzzer!", {
+					duration: 3000,
+				});
+				return;
+			}
 			const matchedIndex = findMatchedAnswer(input);
 			if (matchedIndex !== -1 && !currentRound.answers[matchedIndex].revealed) {
-				playSound("correct");
+				handleAction(true);
 				updateAnswers(matchedIndex);
-				setCardMessage(
-					`You found "${currentRound.answers[matchedIndex].text}"!`
-				);
-				setTeams((prevTeams) => {
-					const currentTeamIndex = prevTeams.findIndex((team) => team.isTurn);
-					const nextTeamIndex = (currentTeamIndex + 1) % prevTeams.length;
-					return prevTeams.map((team, index) => ({
-						...team,
-						isTurn: index === nextTeamIndex,
-					}));
-				});
 				addPoints(currentRound.answers[matchedIndex].points);
 			} else if (matchedIndex !== -1) {
-				setCardMessage("This answer has already been revealed!");
+				toast.error("This answer has already been revealed!", {
+					duration: 3000,
+				});
 			} else {
-				playSound("incorrect");
-				setCardMessage("No match found. Try again!");
+				handleAction(false);
 			}
+			clearBuzzerPlayer();
+			clearTeamTurn();
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentRound, addPoints]
@@ -132,14 +218,16 @@ export const GameProvider: React.FC<{
 		<GameContext.Provider
 			value={{
 				teams,
-				setTeams,
 				currentRoundIndex,
 				currentRound,
+				buzzerPlayer,
+				setBuzzerPlayer,
+				setTeams,
+				setTeamTurn,
 				nextRound,
 				previousRound,
 				addPoints,
 				handleSubmit,
-				cardMessage,
 			}}
 		>
 			{children}
