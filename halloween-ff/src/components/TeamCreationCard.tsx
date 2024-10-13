@@ -13,11 +13,11 @@ import { CiEdit } from "react-icons/ci";
 import { useGameContext } from "@/context/GameContext";
 import { Player } from "@/types";
 
-interface TeamCardProps {
+interface TeamCreationCardProps {
 	teamIndex: number;
 }
 
-const TeamCard: React.FC<TeamCardProps> = ({ teamIndex }) => {
+const TeamCreationCard: React.FC<TeamCreationCardProps> = ({ teamIndex }) => {
 	const { teams, setTeams } = useGameContext();
 	const team = teams[teamIndex];
 	const [playerName, setPlayerName] = useState("");
@@ -183,4 +183,4 @@ const PlayerList: React.FC<PlayerULProps> = ({ players, removePlayer }) => {
 	);
 };
 
-export default TeamCard;
+export default TeamCreationCard;

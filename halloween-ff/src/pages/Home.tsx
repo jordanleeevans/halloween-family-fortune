@@ -1,6 +1,6 @@
 import React from "react";
 import { useGameContext } from "../context/GameContext";
-import TeamCard from "../components/TeamCard";
+import TeamCreationCard from "../components/TeamCreationCard";
 import { Button } from "../components/ui/button";
 import { TypeAnimation } from "react-type-animation";
 import { useNavigate } from "react-router-dom";
@@ -58,8 +58,8 @@ const Home: React.FC = () => {
 				className="text-4xl text-center text-halloweenOrange"
 			/>
 			<div className="flex flex-col items-center space-y-4">
-				<TeamCard teamIndex={0} />
-				<TeamCard teamIndex={1} />
+				<TeamCreationCard teamIndex={0} />
+				<TeamCreationCard teamIndex={1} />
 				<Button
 					onClick={handleStartGame}
 					className="bg-halloweenOrange hover:bg-orange-600"
