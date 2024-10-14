@@ -4,7 +4,7 @@ import TeamCreationCard from "../components/TeamCreationCard";
 import { Button } from "../components/ui/button";
 import { TypeAnimation } from "react-type-animation";
 import { useNavigate } from "react-router-dom";
-import toast from "react-hot-toast";
+import { enqueueToast } from "@/lib/utils";
 
 const Home: React.FC = () => {
 	const { teams, setTeams } = useGameContext();
@@ -38,11 +38,24 @@ const Home: React.FC = () => {
 
 	const handleStartGame = () => {
 		if (teams[0].players.length === 0 || teams[1].players.length === 0) {
-			toast.error("Please add players to both teams to start the game.", {
-				duration: 3000,
-			});
+			enqueueToast(
+				"Please add players to both teams to start the game.",
+				"error",
+				3000
+			);
 			return;
 		}
+
+		// check no two players have the same name
+		const playerNames = teams.flatMap((team) =>
+			team.players.map((player) => player.name)
+		);
+		const uniquePlayerNames = new Set(playerNames);
+		if (playerNames.length !== uniquePlayerNames.size) {
+			enqueueToast("Each player must have a unique name", "error", 3000);
+			return;
+		}
+
 		setTeams(teams);
 		setCurrentPlayers();
 

@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "React";
+import React, { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { useGameContext } from "@/context/GameContext";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -64,7 +64,6 @@ const TeamRoundQuestionCard: React.FC = () => {
 		teams,
 		handleTeamRoundStealSubmission,
 	} = useGameContext();
-	console.log(teams);
 
 	const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
@@ -233,7 +232,7 @@ const SuccessButton: React.FC = () => {
 const ScoreTile: React.FC<{ team: Team }> = ({ team }) => {
 	return (
 		<div className="flex flex-col items-center text-2xl text-red-500 mt-4">
-			<span>{team.score}</span>
+			<span>{team.players.reduce((acc, player) => acc + player.score, 0)}</span>
 		</div>
 	);
 };

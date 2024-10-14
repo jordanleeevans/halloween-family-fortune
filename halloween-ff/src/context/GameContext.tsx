@@ -8,9 +8,9 @@ import React, {
 import { Round, Team, Game, PointsAccrued } from "@/types";
 import fuzzysort from "fuzzysort";
 import { playSound } from "@/lib/utils";
-import { toast } from "react-hot-toast";
 import answerActions from "../data/answers.json";
 import { useNavigate } from "react-router-dom";
+import { enqueueToast } from "@/lib/utils";
 
 interface GameContextProps {
 	teams: Team[];
@@ -49,7 +49,7 @@ export const GameProvider: React.FC<{
 	const [teams, setTeams] = useState<Team[]>(
 		teamNames.map((name) => ({
 			name,
-			players: mockPlayers,
+			players: [],
 			score: 0,
 			isTurn: false,
 		}))
@@ -64,13 +64,9 @@ export const GameProvider: React.FC<{
 	const [pointsAccrued, setPointsAccrued] = useState<PointsAccrued[]>([]);
 	const [wrongAttempts, setWrongAttempts] = useState<number>(0);
 
-	console.log("pointsAccrued", pointsAccrued);
-
 	const setBuzzerPlayer = (teamIndex: number, playerIndex: number) => {
 		if (!teams[teamIndex].players[playerIndex].current) {
-			toast.error("Please select one of the active players!", {
-				duration: 3000,
-			});
+			enqueueToast("Please select one of the active players!", "error", 3000);
 			return;
 		}
 		setBuzzerPlayerState({ teamIndex, playerIndex });
@@ -156,7 +152,6 @@ export const GameProvider: React.FC<{
 				team.isTurn === true
 					? {
 							...team,
-							score: team.score + points,
 							players: team.players.map((player) =>
 								player.current === true
 									? { ...player, score: player.score + points }
@@ -202,7 +197,6 @@ export const GameProvider: React.FC<{
 		}, 0);
 
 		const pointsPerPlayer = Math.floor(totalAccruedPoints / totalTeamPlayers);
-		console.log(pointsPerPlayer, totalAccruedPoints, totalTeamPlayers);
 
 		setTeams((prevTeams) =>
 			prevTeams.map((team) => {
@@ -221,9 +215,11 @@ export const GameProvider: React.FC<{
 			})
 		);
 
-		toast.success(`Each player has stolen ${pointsPerPlayer} points!😈`, {
-			duration: 5000,
-		});
+		enqueueToast(
+			`Each player has stolen ${pointsPerPlayer} points!😈`,
+			"success",
+			5000
+		);
 	};
 
 	const removeStolenPoints = () => {
@@ -270,9 +266,7 @@ export const GameProvider: React.FC<{
 				answerActions.correctAnswer.actions[
 					Math.floor(Math.random() * answerActions.correctAnswer.actions.length)
 				];
-			toast.success(randomAction, {
-				duration: 5000,
-			});
+			enqueueToast(randomAction, "success", 5000);
 		} else {
 			playSound("incorrect");
 			const randomAction: string =
@@ -281,9 +275,7 @@ export const GameProvider: React.FC<{
 						Math.random() * answerActions.incorrectAnswer.actions.length
 					)
 				];
-			toast.error(randomAction, {
-				duration: 5000,
-			});
+			enqueueToast(randomAction, "error", 5000);
 		}
 	};
 
@@ -309,16 +301,16 @@ export const GameProvider: React.FC<{
 			const team = teams.find((team) => team.isTurn);
 
 			if (!team) {
-				toast.error("Please select the player who hit the buzzer!", {
-					duration: 3000,
-				});
+				enqueueToast("Please select the highlighted player!", "error", 3000);
 				return;
 			}
 
 			if (!input) {
-				toast.error("C'mon, you need to put an answer in...duh!", {
-					duration: 3000,
-				});
+				enqueueToast(
+					"C'mon, you need to put an answer in...duh!",
+					"error",
+					3000
+				);
 				return;
 			}
 
@@ -328,9 +320,7 @@ export const GameProvider: React.FC<{
 				updateAnswers(matchedIndex);
 				addPoints(currentRound.answers[matchedIndex].points);
 			} else if (matchedIndex !== -1) {
-				toast.error("This answer has already been revealed!", {
-					duration: 3000,
-				});
+				enqueueToast("This answer has already been revealed!", "error", 3000);
 			} else {
 				handleAction(false);
 			}
@@ -365,9 +355,11 @@ export const GameProvider: React.FC<{
 	const handleWrongAnswer = () => {
 		setWrongAttempts((prev) => prev + 1);
 		if (wrongAttempts + 1 >= 3) {
-			toast.error("You've had 3 wrong attempts. Next team's turn!", {
-				duration: 3000,
-			});
+			enqueueToast(
+				"You've had 3 wrong attempts. Time to steal!",
+				"error",
+				3000
+			);
 			setWrongAttempts(0);
 		}
 	};
@@ -378,16 +370,16 @@ export const GameProvider: React.FC<{
 			const team = teams.find((team) => team.isTurn);
 
 			if (!team) {
-				toast.error("Please select the highlighted player!", {
-					duration: 3000,
-				});
+				enqueueToast("Please select the highlighted player!", "error", 3000);
 				return;
 			}
 
 			if (!input) {
-				toast.error("C'mon, you need to put an answer in...duh!", {
-					duration: 3000,
-				});
+				enqueueToast(
+					"C'mon, you need to put an answer in...duh!",
+					"error",
+					3000
+				);
 				return;
 			}
 
@@ -406,10 +398,9 @@ export const GameProvider: React.FC<{
 							},
 						]
 				);
+				console.log("pointsAccrued", pointsAccrued);
 			} else if (matchedIndex !== -1) {
-				toast.error("This answer has already been revealed!", {
-					duration: 3000,
-				});
+				enqueueToast("This answer has already been revealed!", "error", 3000);
 			} else {
 				handleAction(false);
 				setWrongAttempts((prev) => prev + 1);
@@ -426,16 +417,16 @@ export const GameProvider: React.FC<{
 			const team = teams.find((team) => team.canSteal);
 
 			if (!team) {
-				toast.error("Please select the highlighted player!", {
-					duration: 3000,
-				});
+				enqueueToast("Please select the highlighted player!", "error", 3000);
 				return;
 			}
 
 			if (!input) {
-				toast.error("C'mon, you need to put an answer in...duh!", {
-					duration: 3000,
-				});
+				enqueueToast(
+					"C'mon, you need to put an answer in...duh!",
+					"error",
+					3000
+				);
 				return;
 			}
 
@@ -445,16 +436,6 @@ export const GameProvider: React.FC<{
 				handleAction(true);
 				updateAnswers(matchedIndex);
 				setStolenPoints(currentRound.answers[matchedIndex].points);
-				// TODO: update team.score as sum of all players' scores
-				const newScore = team.players.reduce(
-					(acc, player) => acc + player.score,
-					0
-				);
-				setTeams((prevTeams) =>
-					prevTeams.map((prevTeam) =>
-						prevTeam === team ? { ...prevTeam, score: newScore } : prevTeam
-					)
-				);
 				removeStolenPoints();
 				handleNextPlayer(teams.findIndex((team) => team.canSteal));
 				nextRound();
@@ -463,9 +444,7 @@ export const GameProvider: React.FC<{
 			}
 
 			if (matchedIndex !== -1) {
-				toast.error("This answer has already been revealed you beansprout!", {
-					duration: 3000,
-				});
+				enqueueToast("This answer has already been revealed!", "error", 3000);
 				handleNextPlayer(teams.findIndex((team) => team.canSteal));
 			}
 			handleAction(false);

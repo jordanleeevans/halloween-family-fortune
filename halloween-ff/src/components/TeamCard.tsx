@@ -80,7 +80,7 @@ const PlayerTile: React.FC<PlayerTileProps> = ({
 const ScoreTile: React.FC<{ team: Team }> = ({ team }) => {
 	return (
 		<div className="flex flex-col items-center text-2xl text-red-500 mt-4">
-			<span>{team.score}</span>
+			<span>{team.players.reduce((acc, player) => acc + player.score, 0)}</span>
 		</div>
 	);
 };

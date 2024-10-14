@@ -23,7 +23,6 @@ export type Player = {
 export type Team = {
 	name: string;
 	players: Player[];
-	score: number;
 	isTurn: boolean;
 	canSteal?: boolean;
 };

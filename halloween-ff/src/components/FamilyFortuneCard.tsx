@@ -87,7 +87,7 @@ const Title: React.FC = () => {
 
 	useEffect(() => {
 		document.addEventListener("keydown", (e) => {
-			if (e.key === " ") {
+			if (e.key === " " && document.activeElement?.tagName !== "INPUT") {
 				setIsQuestionRevealed(!isQuestionRevealed);
 			}
 		});
@@ -107,17 +107,7 @@ const Title: React.FC = () => {
 					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm animate-float border-2 border-white shadow-white shadow-sm"
 					onClick={handleRevealQuestion}
 				>
-					<span
-						className="text-white text-xl"
-						onKeyDown={(e) => {
-							console.log(e.key);
-							if (e.key === " ") {
-								handleRevealQuestion();
-							}
-						}}
-					>
-						Click to Reveal
-					</span>
+					<span className="text-white text-xl">Click to Reveal</span>
 				</div>
 			)}
 		</div>
