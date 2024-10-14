@@ -25,4 +25,10 @@ export type Team = {
 	players: Player[];
 	score: number;
 	isTurn: boolean;
+	canSteal?: boolean;
+};
+
+export type PointsAccrued = {
+	points: number;
+	person: string;
 };

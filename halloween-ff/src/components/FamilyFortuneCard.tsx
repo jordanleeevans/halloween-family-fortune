@@ -3,11 +3,38 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Tile from "@/components/ui/tile";
 import { useGameContext } from "@/context/GameContext";
-import { useState } from "react";
+import { useCallback, useState, useEffect, useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 export default function FamilyFortuneCard() {
-	const [input, setInput] = useState("");
-	const { currentRoundIndex, currentRound, handleSubmit } = useGameContext();
+	const [input, setInput] = useState<string>("");
+	const {
+		teams,
+		currentRoundIndex,
+		currentRound,
+		handleBuzzerWinnerSubmission,
+	} = useGameContext();
+	const navigate = useNavigate();
+	const lastTurnTeamIndex = useRef<number | null>(null);
+
+	// useEffect(() => {
+	// 	const currentTeamIndex = teams.findIndex((team) => team.isTurn);
+	// 	if (currentTeamIndex !== -1) {
+	// 		lastTurnTeamIndex.current = currentTeamIndex;
+	// 	}
+	// }, [teams]);
+
+	// useEffect(() => {
+	// 	const revealed = currentRound.answers.some((answer) => answer.revealed);
+	// 	if (revealed) {
+	// 		setTimeout(() => {
+	// 			if (lastTurnTeamIndex.current !== null) {
+	// 				navigate(`/team-round/${lastTurnTeamIndex.current}`);
+	// 				lastTurnTeamIndex.current = null;
+	// 			}
+	// 		}, 3000);
+	// 	}
+	// }, [currentRound.answers, navigate, teams]);
 
 	return (
 		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
@@ -25,7 +52,7 @@ export default function FamilyFortuneCard() {
 				</div>
 				<form
 					onSubmit={(e) => {
-						handleSubmit(e, input);
+						handleBuzzerWinnerSubmission(e, input);
 						setInput("");
 					}}
 					className="flex space-x-2 mb-4"
@@ -57,10 +84,19 @@ const Title: React.FC = () => {
 	const handleRevealQuestion = () => {
 		setIsQuestionRevealed(true);
 	};
+
+	useEffect(() => {
+		document.addEventListener("keydown", (e) => {
+			if (e.key === " ") {
+				setIsQuestionRevealed(!isQuestionRevealed);
+			}
+		});
+	}, [isQuestionRevealed]);
+
 	return (
 		<div className="relative">
 			<h2
-				className={`text-xl mb-4 text-center transition-opacity duration-500 ${
+				className={`text-xl mb-4 text-center transition-opacity duration-500 rounded-md ${
 					isQuestionRevealed ? "opacity-100" : "opacity-0"
 				}`}
 			>
@@ -68,10 +104,20 @@ const Title: React.FC = () => {
 			</h2>
 			{!isQuestionRevealed && (
 				<div
-					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm"
+					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm animate-float border-2 border-white shadow-white shadow-sm"
 					onClick={handleRevealQuestion}
 				>
-					<span className="text-white text-xl">Click to Reveal</span>
+					<span
+						className="text-white text-xl"
+						onKeyDown={(e) => {
+							console.log(e.key);
+							if (e.key === " ") {
+								handleRevealQuestion();
+							}
+						}}
+					>
+						Click to Reveal
+					</span>
 				</div>
 			)}
 		</div>

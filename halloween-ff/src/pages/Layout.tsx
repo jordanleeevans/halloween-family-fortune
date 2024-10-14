@@ -13,6 +13,7 @@ const Layout: React.FC = () => {
 				<div className="text-center bg-[url('./assets/images/halloween-background.jpg')] bg-center text-halloweenOrange font-creepster flex flex-col items-center min-h-screen">
 					<Toaster />
 					<Navbar />
+					{/* TODO: Add Scoreboard */}
 					<Outlet />
 				</div>
 			</GameProvider>

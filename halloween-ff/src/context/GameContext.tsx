@@ -5,27 +5,41 @@ import React, {
 	ReactNode,
 	useCallback,
 } from "react";
-import { Round, Team, Game } from "@/types";
+import { Round, Team, Game, PointsAccrued } from "@/types";
 import fuzzysort from "fuzzysort";
 import { playSound } from "@/lib/utils";
 import { toast } from "react-hot-toast";
 import answerActions from "../data/answers.json";
+import { useNavigate } from "react-router-dom";
 
 interface GameContextProps {
 	teams: Team[];
 	currentRound: Round;
 	currentRoundIndex: number;
 	buzzerPlayer: { teamIndex: number | null; playerIndex: number | null };
+	pointsAccrued: PointsAccrued[] | undefined;
+	wrongAttempts: number;
+	setPlayerPoints: (pointsAccrued: PointsAccrued[]) => void;
+	handleWrongAnswer: () => void;
+	handleCorrectAnswer: (points: number, person: string) => void;
 	setBuzzerPlayer: (teamIndex: number, playerIndex: number) => void;
 	setTeams: React.Dispatch<React.SetStateAction<Team[]>>;
 	setTeamTurn: (teamIndex: number) => void;
 	nextRound: () => void;
 	previousRound: () => void;
 	addPoints: (points: number) => void;
-	handleSubmit: (e: React.FormEvent, input: string) => void;
+	handleBuzzerWinnerSubmission: (e: React.FormEvent, input: string) => void;
+	handleTeamRoundSubmission: (e: React.FormEvent, input: string) => void;
+	handleTeamRoundStealSubmission: (e: React.FormEvent, input: string) => void;
 }
 
 const GameContext = createContext<GameContextProps | undefined>(undefined);
+
+const mockPlayers = [
+	{ name: "Player 1", score: 0, current: true },
+	{ name: "Player 2", score: 0, current: false },
+	{ name: "Player 3", score: 0, current: false },
+];
 
 export const GameProvider: React.FC<{
 	children: ReactNode;
@@ -35,17 +49,22 @@ export const GameProvider: React.FC<{
 	const [teams, setTeams] = useState<Team[]>(
 		teamNames.map((name) => ({
 			name,
-			players: [],
+			players: mockPlayers,
 			score: 0,
 			isTurn: false,
 		}))
 	);
+	const navigate = useNavigate();
 	const [currentRoundIndex, setCurrentRoundIndex] = useState<number>(0);
 	const [currentRound, setCurrentRound] = useState<Round>(gameData[0]);
 	const [buzzerPlayer, setBuzzerPlayerState] = useState<{
 		teamIndex: number | null;
 		playerIndex: number | null;
 	}>({ teamIndex: null, playerIndex: null });
+	const [pointsAccrued, setPointsAccrued] = useState<PointsAccrued[]>([]);
+	const [wrongAttempts, setWrongAttempts] = useState<number>(0);
+
+	console.log("pointsAccrued", pointsAccrued);
 
 	const setBuzzerPlayer = (teamIndex: number, playerIndex: number) => {
 		if (!teams[teamIndex].players[playerIndex].current) {
@@ -88,13 +107,34 @@ export const GameProvider: React.FC<{
 		);
 	};
 
+	const handleNextPlayer = (teamIndex: number) => {
+		setTeams((prevTeams) =>
+			prevTeams.map((team, index) => {
+				if (index === teamIndex) {
+					const currentPlayerIndex = team.players.findIndex(
+						(player) => player.current
+					);
+					let newPlayerIndex: number = 0;
+					newPlayerIndex = (currentPlayerIndex + 1) % team.players.length;
+					return {
+						...team,
+						players: team.players.map((player, index) => ({
+							...player,
+							current: index === newPlayerIndex,
+						})),
+					};
+				}
+				return team;
+			})
+		);
+	};
+
 	const nextRound = () => {
 		setCurrentRoundIndex((prevIndex) => {
 			const newIndex = (prevIndex + 1) % gameData.length;
 			setCurrentRound(gameData[newIndex]);
 			return newIndex;
 		});
-		handleNextPlayers("next");
 	};
 
 	const previousRound = () => {
@@ -108,7 +148,6 @@ export const GameProvider: React.FC<{
 			setCurrentRound(gameData[newIndex]);
 			return newIndex;
 		});
-		handleNextPlayers("previous");
 	};
 
 	const addPoints = (points: number) => {
@@ -127,6 +166,85 @@ export const GameProvider: React.FC<{
 					: team
 			)
 		);
+	};
+
+	const setPlayerPoints = (pointsAccrued: PointsAccrued[]) => {
+		pointsAccrued.forEach((obj) => {
+			setTeams((prevTeams) =>
+				prevTeams.map((team) => {
+					return {
+						...team,
+						players: team.players.map((player) => {
+							if (player.name === obj.person) {
+								return {
+									...player,
+									score: player.score + obj.points,
+								};
+							}
+							return player;
+						}),
+					};
+				})
+			);
+		});
+	};
+
+	const setStolenPoints = (basePoints: number = 0) => {
+		const totalAccruedPoints = pointsAccrued.reduce(
+			(acc, obj) => acc + obj.points,
+			basePoints
+		);
+		const totalTeamPlayers = teams.reduce((acc, team) => {
+			if (team.canSteal) {
+				return acc + team.players.length;
+			}
+			return acc;
+		}, 0);
+
+		const pointsPerPlayer = Math.floor(totalAccruedPoints / totalTeamPlayers);
+		console.log(pointsPerPlayer, totalAccruedPoints, totalTeamPlayers);
+
+		setTeams((prevTeams) =>
+			prevTeams.map((team) => {
+				if (team.canSteal) {
+					return {
+						...team,
+						players: team.players.map((player) => {
+							return {
+								...player,
+								score: player.score + pointsPerPlayer,
+							};
+						}),
+					};
+				}
+				return team;
+			})
+		);
+
+		toast.success(`Each player has stolen ${pointsPerPlayer} points!😈`, {
+			duration: 5000,
+		});
+	};
+
+	const removeStolenPoints = () => {
+		pointsAccrued.forEach((obj) => {
+			setTeams((prevTeams) =>
+				prevTeams.map((team) => {
+					return {
+						...team,
+						players: team.players.map((player) => {
+							if (player.name === obj.person) {
+								return {
+									...player,
+									score: player.score - obj.points,
+								};
+							}
+							return player;
+						}),
+					};
+				})
+			);
+		});
 	};
 
 	const setTeamTurn = (teamIndex: number) => {
@@ -185,7 +303,7 @@ export const GameProvider: React.FC<{
 		setCurrentRound({ ...currentRound, answers: updatedAnswers });
 	};
 
-	const handleSubmit = useCallback(
+	const handleBuzzerWinnerSubmission = useCallback(
 		(e: React.FormEvent, input: string) => {
 			e.preventDefault();
 			const team = teams.find((team) => team.isTurn);
@@ -216,11 +334,154 @@ export const GameProvider: React.FC<{
 			} else {
 				handleAction(false);
 			}
-			clearBuzzerPlayer();
-			clearTeamTurn();
+			// clearBuzzerPlayer();
+			// clearTeamTurn();
+			// go to next player in team
+			const currentTeamIndex = teams.findIndex((team) => team.isTurn);
+			handleNextPlayer(currentTeamIndex);
+			if (currentRound.answers.some((answer) => answer.revealed)) {
+				setTimeout(() => {
+					navigate(`/team-round/${currentTeamIndex}`);
+				}, 3000);
+			}
 		},
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 		[currentRound, addPoints]
+	);
+
+	const handleCorrectAnswer = (points: number, person: string) => {
+		setPointsAccrued(
+			(prev) =>
+				prev && [
+					...prev,
+					{
+						points,
+						person,
+					},
+				]
+		);
+	};
+
+	const handleWrongAnswer = () => {
+		setWrongAttempts((prev) => prev + 1);
+		if (wrongAttempts + 1 >= 3) {
+			toast.error("You've had 3 wrong attempts. Next team's turn!", {
+				duration: 3000,
+			});
+			setWrongAttempts(0);
+		}
+	};
+
+	const handleTeamRoundSubmission = useCallback(
+		(e: React.FormEvent, input: string) => {
+			e.preventDefault();
+			const team = teams.find((team) => team.isTurn);
+
+			if (!team) {
+				toast.error("Please select the highlighted player!", {
+					duration: 3000,
+				});
+				return;
+			}
+
+			if (!input) {
+				toast.error("C'mon, you need to put an answer in...duh!", {
+					duration: 3000,
+				});
+				return;
+			}
+
+			const matchedIndex = findMatchedAnswer(input);
+			if (matchedIndex !== -1 && !currentRound.answers[matchedIndex].revealed) {
+				handleAction(true);
+				updateAnswers(matchedIndex);
+				addPoints(currentRound.answers[matchedIndex].points);
+				setPointsAccrued(
+					(prev) =>
+						prev && [
+							...prev,
+							{
+								points: currentRound.answers[matchedIndex].points,
+								person: team.players.find((player) => player.current)!.name,
+							},
+						]
+				);
+			} else if (matchedIndex !== -1) {
+				toast.error("This answer has already been revealed!", {
+					duration: 3000,
+				});
+			} else {
+				handleAction(false);
+				setWrongAttempts((prev) => prev + 1);
+			}
+			handleNextPlayer(teams.findIndex((team) => team.isTurn));
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[currentRound, addPoints, teams]
+	);
+
+	const handleTeamRoundStealSubmission = useCallback(
+		(e: React.FormEvent, input: string) => {
+			e.preventDefault();
+			const team = teams.find((team) => team.canSteal);
+
+			if (!team) {
+				toast.error("Please select the highlighted player!", {
+					duration: 3000,
+				});
+				return;
+			}
+
+			if (!input) {
+				toast.error("C'mon, you need to put an answer in...duh!", {
+					duration: 3000,
+				});
+				return;
+			}
+
+			const matchedIndex = findMatchedAnswer(input);
+
+			if (matchedIndex !== -1 && !currentRound.answers[matchedIndex].revealed) {
+				handleAction(true);
+				updateAnswers(matchedIndex);
+				setStolenPoints(currentRound.answers[matchedIndex].points);
+				// TODO: update team.score as sum of all players' scores
+				const newScore = team.players.reduce(
+					(acc, player) => acc + player.score,
+					0
+				);
+				setTeams((prevTeams) =>
+					prevTeams.map((prevTeam) =>
+						prevTeam === team ? { ...prevTeam, score: newScore } : prevTeam
+					)
+				);
+				removeStolenPoints();
+				handleNextPlayer(teams.findIndex((team) => team.canSteal));
+				nextRound();
+				navigate("/family-fortune");
+				return;
+			}
+
+			if (matchedIndex !== -1) {
+				toast.error("This answer has already been revealed you beansprout!", {
+					duration: 3000,
+				});
+				handleNextPlayer(teams.findIndex((team) => team.canSteal));
+			}
+			handleAction(false);
+			teams.forEach((team) => {
+				if (team.canSteal) {
+					delete team.canSteal;
+				}
+			});
+			handleNextPlayer(teams.findIndex((team) => team.canSteal));
+			setWrongAttempts(0);
+			nextRound();
+			navigate("/family-fortune");
+			setPointsAccrued([]);
+		},
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+		[addPoints, currentRound.answers, findMatchedAnswer, handleAction, teams]
 	);
 
 	return (
@@ -230,13 +491,20 @@ export const GameProvider: React.FC<{
 				currentRoundIndex,
 				currentRound,
 				buzzerPlayer,
+				pointsAccrued,
+				wrongAttempts,
+				setPlayerPoints,
+				handleWrongAnswer,
+				handleCorrectAnswer,
 				setBuzzerPlayer,
 				setTeams,
 				setTeamTurn,
 				nextRound,
 				previousRound,
 				addPoints,
-				handleSubmit,
+				handleBuzzerWinnerSubmission,
+				handleTeamRoundSubmission,
+				handleTeamRoundStealSubmission,
 			}}
 		>
 			{children}
