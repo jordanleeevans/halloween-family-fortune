@@ -3,22 +3,6 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useGameContext } from "@/context/GameContext";
 import { Player } from "@/types";
 
-const mockPlayerScores = [
-	{ name: "Player 1", score: 100 },
-	{ name: "Player 2", score: 200 },
-	{ name: "Player 3", score: 300 },
-	{ name: "Player 4", score: 400 },
-	{ name: "Player 5", score: 500 },
-	{ name: "Player 6", score: 600 },
-	{ name: "Player 7", score: 700 },
-	{ name: "Player 8", score: 800 },
-	{ name: "Player 9", score: 900 },
-	{ name: "Player 10", score: 1000 },
-	{ name: "Player 11", score: 1100 },
-	{ name: "Player 12", score: 1200 },
-	{ name: "Player 13", score: 1300 },
-];
-
 type ScoreboardProps = {
 	isVisible: boolean;
 };
@@ -26,7 +10,7 @@ type ScoreboardProps = {
 const Scoreboard: React.FC<ScoreboardProps> = ({ isVisible }) => {
 	const { teams } = useGameContext();
 	const players = teams.flatMap((team) => team.players);
-	const sortedPlayers = [...mockPlayerScores].sort((a, b) => b.score - a.score);
+	const sortedPlayers = [...players].sort((a, b) => b.score - a.score);
 
 	return (
 		<Card
