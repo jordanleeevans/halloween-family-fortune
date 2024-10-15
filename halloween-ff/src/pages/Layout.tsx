@@ -5,6 +5,8 @@ import gameData from "../data/gameData.json";
 import { Outlet } from "react-router-dom";
 import { Toaster } from "react-hot-toast";
 import Scoreboard from "@/components/Scoreboard";
+import JumpScare from "@/components/JumpScare";
+import usePlaySoundOnMount from "@/hooks/usePlaySoundOnMount";
 
 const Layout: React.FC = () => {
 	const teamNames = ["Team Spooky", "Team Creepy"];
@@ -18,6 +20,9 @@ const Layout: React.FC = () => {
 		window.addEventListener("keydown", handleKeyDown);
 		return () => window.removeEventListener("keydown", handleKeyDown);
 	}, [showScoreboard]);
+
+	usePlaySoundOnMount("intro");
+
 	return (
 		<>
 			<GameProvider teamNames={teamNames} gameData={gameData}>
@@ -26,6 +31,7 @@ const Layout: React.FC = () => {
 						<div className="fixed inset-0 bg-black opacity-50 z-40"></div>
 					)}
 					<Toaster />
+					<JumpScare />
 					<Navbar setShowScoreboard={setShowScoreboard} />
 					<Scoreboard isVisible={showScoreboard} />
 					<Outlet />

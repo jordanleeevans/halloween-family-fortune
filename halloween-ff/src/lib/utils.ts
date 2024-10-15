@@ -9,14 +9,18 @@ export function cn(...inputs: ClassValue[]) {
 // Import sound files statically
 import correctSound from "../assets/audio/correct.mp3";
 import incorrectSound from "../assets/audio/incorrect.mp3";
+import jumpScareSound from "../assets/audio/jumpscare.mp3";
+import introMusic from "../assets/audio/intro.mp3";
 
 // Map sound effects to their corresponding imports
 const soundMap = {
 	correct: correctSound,
 	incorrect: incorrectSound,
+	jumpScare: jumpScareSound,
+	intro: introMusic,
 } as const;
 
-type SoundEffect = keyof typeof soundMap;
+export type SoundEffect = keyof typeof soundMap;
 
 // Function to play sound
 export async function playSound(sound: SoundEffect) {

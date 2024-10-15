@@ -5,8 +5,12 @@ import { useGameContext } from "@/context/GameContext";
 
 const GameTitle: React.FC = () => {
 	return (
-		<div className="flex text-2xl font-bold text-halloweenOrange">
-			Halloween Family Fortune
+		<div className="flex">
+			<h1 className="text-4xl font-bold ">
+				<span className="text-transparent bg-clip-text bg-gradient-to-r from-red-500 to-halloweenOrange">
+					Halloween Family Fortune
+				</span>
+			</h1>
 		</div>
 	);
 };
