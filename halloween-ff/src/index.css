@@ -30,6 +30,14 @@
   animation: float 2s ease-in-out infinite;
 }
 
+.wave {
+  --mask:
+    radial-gradient(23.67px at 50% calc(100% - 32.4px),#000 99%,#0000 101%) calc(50% - 24px) 0/48px 100%,
+    radial-gradient(23.67px at 50% calc(100% + 20.4px),#0000 99%,#000 101%) 50% calc(100% - 12px)/48px 100% repeat-x;
+  -webkit-mask: var(--mask);
+          mask: var(--mask);
+}
+
 @layer base {
   :root {
     --background: 0 0% 100%;

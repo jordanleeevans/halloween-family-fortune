@@ -65,7 +65,7 @@ const Home: React.FC = () => {
 	return (
 		<div className="home">
 			<TypeAnimation
-				sequence={["Welcome to Halloween Family Feud!\nGet ready to play!"]}
+				sequence={["Welcome to Halloween Family Fortune!\nGet ready to play!"]}
 				style={{ whiteSpace: "pre-line", height: "195px" }}
 				className="text-4xl text-center text-halloweenOrange"
 			/>

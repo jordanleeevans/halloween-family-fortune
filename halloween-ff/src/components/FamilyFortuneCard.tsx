@@ -104,7 +104,7 @@ const Title: React.FC = () => {
 			</h2>
 			{!isQuestionRevealed && (
 				<div
-					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm animate-float border-2 border-white shadow-white shadow-sm"
+					className="absolute inset-0 bg-gray-900 flex items-center justify-center cursor-pointer rounded-sm animate-float border-gray-700 border-2 shadow-gray-800 shadow-md"
 					onClick={handleRevealQuestion}
 				>
 					<span className="text-white text-xl">Click to Reveal</span>
