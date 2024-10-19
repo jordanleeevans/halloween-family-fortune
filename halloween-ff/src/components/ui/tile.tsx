@@ -8,7 +8,7 @@ interface TileProps {
 
 const Tile: React.FC<TileProps> = ({ answer }) => (
 	<div
-		className={`w-full p-4 mb-2 text-center rounded-md transition-all duration-300 hover:bg-halloweenOrange hover:text-white
+		className={`w-full p-4 mb-2 text-center rounded-md transition-all duration-300 hover:bg-halloweenOrange hover:text-white border border-white 
        ${
 					answer.revealed
 						? "bg-halloweenOrange text-white"

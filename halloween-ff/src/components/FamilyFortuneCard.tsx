@@ -3,19 +3,14 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import Tile from "@/components/ui/tile";
 import { useGameContext } from "@/context/GameContext";
-import { useCallback, useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
 
 export default function FamilyFortuneCard() {
 	const [input, setInput] = useState<string>("");
-	const {
-		teams,
-		currentRoundIndex,
-		currentRound,
-		handleBuzzerWinnerSubmission,
-	} = useGameContext();
+	const { currentRoundIndex, currentRound, handleBuzzerWinnerSubmission } =
+		useGameContext();
 	return (
-		<Card className="bg-gray-900 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500 ">
+		<Card>
 			<CardHeader>
 				<CardTitle className="text-2xl font-bold text-halloweenOrange text-center">
 					Round {currentRoundIndex + 1}

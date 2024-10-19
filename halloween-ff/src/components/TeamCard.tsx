@@ -16,6 +16,16 @@ const TeamCard: React.FC<TeamCardProps> = ({ teamIndex }) => {
 		setBuzzerPlayer(teamIndex, index);
 	};
 
+	const placeholderPlayers = Array.from({ length: 6 }, (_, index) => ({
+		name: `Player ${index + 1}`,
+		score: 0,
+		current: index === 0 ? true : false,
+	}));
+
+	const players = teams[teamIndex].players.length
+		? teams[teamIndex].players
+		: placeholderPlayers;
+
 	return (
 		<Card>
 			<CardHeader className="flex justify-between">
@@ -23,7 +33,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ teamIndex }) => {
 					{teams[teamIndex].name}
 				</CardTitle>
 				<CardContent className="flex flex-col items-center">
-					{teams[teamIndex].players.map((player, index) => (
+					{players.map((player, index) => (
 						<PlayerTile
 							key={index}
 							player={player}
