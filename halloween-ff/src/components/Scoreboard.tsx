@@ -14,7 +14,7 @@ const Scoreboard: React.FC<ScoreboardProps> = ({ isVisible }) => {
 
 	return (
 		<Card
-			className={`absolute max-w-g mx-auto mt-8 z-50  shadow-md shadow-white py-3 px-4 wave ${
+			className={`absolute max-w-g mx-auto mt-8 z-50 bg-white text-black border-black shadow-md shadow-white py-3 px-4 wave ${
 				isVisible
 					? "animate-in slide-in-from-left-full opacity-90 animate-float"
 					: "opacity-0"
