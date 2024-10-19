@@ -1,7 +1,9 @@
 import React from "react";
 import { Button } from "@/components/ui/button";
 import { AiOutlineTrophy } from "react-icons/ai";
+import { FaHome } from "react-icons/fa";
 import { useGameContext } from "@/context/GameContext";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const GameTitle: React.FC = () => {
 	return (
@@ -29,12 +31,29 @@ const ScoreBoardButton: React.FC<{
 	);
 };
 
+interface HomeButtonProps {
+	onClick: () => void;
+}
+
+const HomeButton: React.FC<HomeButtonProps> = ({ onClick }) => {
+	return (
+		<Button
+			className="bg-halloweenOrange text-white hover:bg-orange-600 animate-in fade-in"
+			onClick={onClick}
+		>
+			Home <FaHome className="text-xl pl-1 inline-block" />
+		</Button>
+	);
+};
+
 interface NavbarProps {
 	setShowScoreboard: (show: boolean) => void;
 }
 
 const Navbar: React.FC<NavbarProps> = ({ setShowScoreboard }) => {
 	const { teams } = useGameContext();
+	const { pathname } = useLocation();
+	const navigate = useNavigate();
 	const allPlayers = teams.flatMap((team) => team.players);
 	const totalScore = allPlayers.reduce((acc, team) => acc + team.score, 0);
 	return (
@@ -43,6 +62,7 @@ const Navbar: React.FC<NavbarProps> = ({ setShowScoreboard }) => {
 			{totalScore > 0 && (
 				<ScoreBoardButton setShowScoreboard={setShowScoreboard} />
 			)}
+			{pathname !== "/" && <HomeButton onClick={() => navigate("/")} />}
 		</div>
 	);
 };

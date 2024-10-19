@@ -89,12 +89,7 @@ const TeamCreationCard: React.FC<TeamCreationCardProps> = ({ teamIndex }) => {
 						onChange={(e) => setPlayerName(e.target.value)}
 						onKeyDown={handleKeyDown}
 					/>
-					<Button
-						onClick={handleAddPlayer}
-						className="bg-halloweenOrange hover:bg-orange-600"
-					>
-						Add Player
-					</Button>
+					<Button onClick={handleAddPlayer}>Add Player</Button>
 				</div>
 			</CardContent>
 			<CardFooter className="justify-center text-halloweenOrange">
