@@ -14,30 +14,8 @@ export default function FamilyFortuneCard() {
 		currentRound,
 		handleBuzzerWinnerSubmission,
 	} = useGameContext();
-	const navigate = useNavigate();
-	const lastTurnTeamIndex = useRef<number | null>(null);
-
-	// useEffect(() => {
-	// 	const currentTeamIndex = teams.findIndex((team) => team.isTurn);
-	// 	if (currentTeamIndex !== -1) {
-	// 		lastTurnTeamIndex.current = currentTeamIndex;
-	// 	}
-	// }, [teams]);
-
-	// useEffect(() => {
-	// 	const revealed = currentRound.answers.some((answer) => answer.revealed);
-	// 	if (revealed) {
-	// 		setTimeout(() => {
-	// 			if (lastTurnTeamIndex.current !== null) {
-	// 				navigate(`/team-round/${lastTurnTeamIndex.current}`);
-	// 				lastTurnTeamIndex.current = null;
-	// 			}
-	// 		}, 3000);
-	// 	}
-	// }, [currentRound.answers, navigate, teams]);
-
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
+		<Card className="bg-gray-900 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500 ">
 			<CardHeader>
 				<CardTitle className="text-2xl font-bold text-halloweenOrange text-center">
 					Round {currentRoundIndex + 1}

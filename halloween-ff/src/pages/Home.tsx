@@ -74,7 +74,7 @@ const Home: React.FC = () => {
 				<TeamCreationCard teamIndex={1} />
 				<Button
 					onClick={handleStartGame}
-					className="bg-halloweenOrange hover:bg-orange-600"
+					className="bg-halloweenOrange hover:bg-orange-600 border border-white shadow-lg hover:shadow-xl"
 				>
 					Play
 				</Button>

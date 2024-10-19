@@ -38,6 +38,14 @@
           mask: var(--mask);
 }
 
+#owl {
+  transform-origin: 64% 68%;
+  transition: transform 0.75s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+#owl:hover {
+  transform: scale(1.2);
+} 
+
 @layer base {
   :root {
     --background: 0 0% 100%;

@@ -17,7 +17,7 @@ const TeamCard: React.FC<TeamCardProps> = ({ teamIndex }) => {
 	};
 
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl">
+		<Card>
 			<CardHeader className="flex justify-between">
 				<CardTitle className="text-2xl font-bold text-halloweenOrange mb-2">
 					{teams[teamIndex].name}

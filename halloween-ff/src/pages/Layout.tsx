@@ -7,6 +7,7 @@ import { Toaster } from "react-hot-toast";
 import Scoreboard from "@/components/Scoreboard";
 import JumpScare from "@/components/JumpScare";
 import usePlaySoundOnMount from "@/hooks/usePlaySoundOnMount";
+import Background from "@/components/Background";
 
 const Layout: React.FC = () => {
 	const teamNames = ["Team Spooky", "Team Creepy"];
@@ -26,15 +27,20 @@ const Layout: React.FC = () => {
 	return (
 		<>
 			<GameProvider teamNames={teamNames} gameData={gameData}>
-				<div className="text-center bg-[url('./assets/images/halloween-background.jpg')] bg-center text-halloweenOrange font-creepster flex flex-col items-center min-h-screen">
-					{showScoreboard && (
-						<div className="fixed inset-0 bg-black opacity-50 z-40"></div>
-					)}
-					<Toaster />
-					<JumpScare />
-					<Navbar setShowScoreboard={setShowScoreboard} />
-					<Scoreboard isVisible={showScoreboard} />
-					<Outlet />
+				<div className="relative w-full h-screen overflow-hidden font-creepster bg-black">
+					<div className="absolute inset-0 z-0">
+						<Background />
+					</div>
+					<div className="relative z-10 flex flex-col items-center min-h-screen">
+						{showScoreboard && (
+							<div className="fixed inset-0 bg-black opacity-50 z-40"></div>
+						)}
+						<Toaster />
+						<JumpScare />
+						<Navbar setShowScoreboard={setShowScoreboard} />
+						<Scoreboard isVisible={showScoreboard} />
+						<Outlet />
+					</div>
 				</div>
 			</GameProvider>
 		</>

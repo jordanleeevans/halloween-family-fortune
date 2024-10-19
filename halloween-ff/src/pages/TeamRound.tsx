@@ -78,7 +78,7 @@ const TeamRoundQuestionCard: React.FC = () => {
 		}
 	};
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl hover:scale-105 transition-transform duration-500">
+		<Card>
 			<CardHeader>
 				<CardTitle className="text-2xl font-bold text-halloweenOrange text-center">
 					Round {currentRoundIndex + 1}
@@ -158,7 +158,7 @@ const TeamRoundTeamCard: React.FC<TeamRoundTeamCardProps> = ({ teamIndex }) => {
 	};
 
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl">
+		<Card>
 			<CardHeader className="flex justify-between">
 				<CardTitle className="text-2xl font-bold text-halloweenOrange mb-2">
 					{teams[teamIndex].name}

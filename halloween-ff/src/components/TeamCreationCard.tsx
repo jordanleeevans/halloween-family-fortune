@@ -67,7 +67,7 @@ const TeamCreationCard: React.FC<TeamCreationCardProps> = ({ teamIndex }) => {
 	};
 
 	return (
-		<Card className="bg-halloweenBlack border-2 border-halloweenOrange text-white shadow-xl mt-4 hover:scale-105 transform transition-transform duration-500">
+		<Card className="mt-4">
 			<CardHeader className="flex items-center justify-between">
 				<TeamName
 					teamName={team.name}
